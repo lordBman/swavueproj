@@ -1,25 +1,69 @@
 {
-      "routes": [
-        {
-          "route": "/*",
-          "allowedRoles": ["Authenticated"]
-        }
-      ],
-      "responseOverrides": {
-        "401": {
-          "statusCode": 302,
-          "redirect": "/.auth/login/aad"
-        }
-      },
-      "auth": {
+    "auth": {
         "identityProviders": {
-          "azureActiveDirectory": {
-            "registration": {
-              "openIdIssuer": "https://login.microsoftonline.com/x/v2.0",
-              "clientIdSettingName": "AZURE_CLIENT_ID",
-              "clientSecretSettingName": "AZURE_CLIENT_SECRET"
+            "azureActiveDirectory": {
+                "registration": {
+                    "openIdIssuer": "https://login.microsoftonline.com/dd82b190-6d71-47ce-89c4-b63cec673972/v2.0",
+                    "clientIdSettingName": "AAD_CLIENT_ID",
+                    "clientSecretSettingName": "AAD_CLIENT_SECRET"
+                }
             }
-          }
         }
-      }
+    },
+    "navigationFallback": {
+        "rewrite": "index.html"
+    },
+    "routes": [
+        {
+            "route": "/login",
+            "rewrite": "/.auth/login/aad",
+            "allowedRoles": ["anonymous", "authenticated"],
+            "headers": {
+                "cache-control": "max-age=300, must-revalidate"
+            }
+        },
+        {
+            "route": "/.auth/login/github",
+            "statusCode": 404
+        },
+        {
+            "route": "/.auth/login/twitter",
+            "statusCode": 404
+        },
+        {
+            "route": "/logout",
+            "redirect": "/.auth/logout",
+            "allowedRoles": ["anonymous", "authenticated"]
+        },
+        {
+            "route": "/*",
+            "allowedRoles": ["authenticated"],
+            "headers": {
+                "cache-control": "max-age=240, must-revalidate"
+            }
+        }
+    ],
+    "responseOverrides": {
+        "401": {
+            "redirect": "/login",
+            "statusCode": 302
+        }
+    },
+    "globalHeaders": {
+        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+    },
+    "mimeTypes": {
+        ".json": "text/json",
+        ".md": "text/markdown",
+        ".xml": "application/xml"
+    },
+    "networking": {
+        "allowedIpRanges": ["AzureFrontDoor.Backend"]
+    },
+    "forwardingGateway": {
+        "requiredHeaders": {
+            "X-Azure-FDID": ""
+        },
+        "allowedForwardedHosts": [ "" ]
     }
+}
