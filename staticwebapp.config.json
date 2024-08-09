@@ -64,6 +64,5 @@
         "requiredHeaders": {
             "X-Azure-FDID": ""
         },
-        "allowedForwardedHosts": [ "" ]
     }
 }
