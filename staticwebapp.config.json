@@ -10,59 +10,21 @@
             }
         }
     },
-    "navigationFallback": {
-        "rewrite": "index.html"
-    },
     "routes": [
         {
             "route": "/login",
             "rewrite": "/.auth/login/aad",
             "allowedRoles": ["anonymous", "authenticated"],
-            "headers": {
-                "cache-control": "max-age=300, must-revalidate"
-            }
-        },
-        {
-            "route": "/.auth/login/github",
-            "statusCode": 404
-        },
-        {
-            "route": "/.auth/login/twitter",
-            "statusCode": 404
-        },
-        {
-            "route": "/logout",
-            "redirect": "/.auth/logout",
-            "allowedRoles": ["anonymous", "authenticated"]
         },
         {
             "route": "/*",
-            "allowedRoles": ["authenticated"],
-            "headers": {
-                "cache-control": "max-age=240, must-revalidate"
-            }
+            "allowedRoles": ["authenticated"]
         }
     ],
     "responseOverrides": {
         "401": {
             "redirect": "/login",
             "statusCode": 302
-        }
-    },
-    "globalHeaders": {
-        "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
-    },
-    "mimeTypes": {
-        ".json": "text/json",
-        ".md": "text/markdown",
-        ".xml": "application/xml"
-    },
-    "networking": {
-        "allowedIpRanges": ["AzureFrontDoor.Backend"]
-    },
-    "forwardingGateway": {
-        "requiredHeaders": {
-            "X-Azure-FDID": ""
         }
     }
 }
